@@ -1,0 +1,39 @@
+{% extends "main.html" %}
+
+{% block content %}
+    
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="mx-auto">
+            <img
+                class="mb-3 img-fluid"
+                src="{{ url_for('static', filename='/images/TuiperLogo.png') }}"
+                style="max-width: 10em; width: 100%;"
+            />
+        </div>
+    </div>
+    <div class="card-login mx-auto">
+        <h1 class="text-center">Iniciar sesión</h1>
+        <div class="alert alert-danger" role="alert" v-if="errorMessage">
+            [[errorMessage]]
+        </div>
+        <div class="alert alert-success" role="alert" v-else-if="successMessage">
+            [[successMessage]]
+        </div>
+        <div class="alert alert-info" role="alert" v-else>
+            Por favor, introduzca el usuario y la contraseña.
+        </div>
+        <form @submit.prevent="login">
+            <div class="form-group">
+                <label for="username" class="font-weight-bold">Nombre de usuario</label>
+                <input v-model="username" type="username" class="form-control shadow-sm" id="username-input" >
+            
+                <label for="password" class="font-weight-bold mt-2">Contraseña</label>
+                <input v-model="password" type="password" class="form-control shadow-sm" id="password-input">
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <button v-on:click="login" type="submit" class="btn btn-primary shadow-sm">Iniciar sesión</button>
+                <a href="/register">¿No tienes cuenta? Regístrate</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

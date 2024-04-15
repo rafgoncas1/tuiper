@@ -1,0 +1,61 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgb(251, 249, 241);
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+#app {
+    font-family: 'Roboto', Arial, sans-serif;
+    color: #2c3e50;
+    align-items: center;
+    margin-bottom: 100px;
+}
+
+#app > .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#sheet * {
+    page-break-inside: avoid;
+}
+
+.card-login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 20px;
+    padding-right: 50px;
+    padding-left: 50px;
+    padding-bottom: 50px;
+    max-width: 600px;
+    min-height: 250px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-top: 10px solid rgb(145, 200, 228);
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat( auto-fill, minmax(300px, 1fr) );
+    gap: 25px;
+}
+
+.btn-primary {
+    background-color: rgb(72, 134, 196);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: rgb(80, 172, 218);
+}
