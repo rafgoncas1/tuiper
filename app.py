@@ -55,5 +55,79 @@ def api_register():
     
 @app.route('/api/logout', methods=['POST'])
 def api_logout():
+    if not is_logged():
+        return jsonify({'message': 'No hay una sesión activa'}), 404
     session.pop('user', None)
     return jsonify({'message': 'Cierre de sesión exitoso'}), 200
+
+@app.route('/api/tuips', methods=['GET'])
+def api_tuips():
+    if not is_logged():
+        return jsonify({'message': 'No hay una sesión activa'}), 404
+    tuip_keys = r.keys('tuip:*')
+    tuips = []
+    for tuip_key in tuip_keys:
+        tuip = r.hgetall(tuip_key)
+        tuip['likes'] = r.scard(f'{tuip_key}:likes')
+        tuips.append({'id': tuip_key.split(':')[1], **tuip})
+    return jsonify(tuips), 200
+
+
+@app.route('/api/tuip', methods=['POST'])
+def api_tuip():
+    if not is_logged():
+        return jsonify({'message': 'No hay una sesión activa'}), 404
+    try:
+        title = request.get_json()['title']
+        content = request.get_json()['content']
+        author = session.get('user')
+        
+        tuip_id = r.incr('tuip_id')
+        
+        r.hmset(f'tuip:{tuip_id}', {'title': title, 'content': content, 'author': author})
+    except:
+        return jsonify({'message': 'Error al crear tuip'}), 500
+    return jsonify({'message': 'Tuip creado exitosamente'}), 200
+
+@app.route('/api/tuip/<id>', methods=['GET'])
+def api_get_tuip(id):
+    if not is_logged():
+        return jsonify({'message': 'No hay una sesión activa'}), 404
+    tuip = r.hgetall(f'tuip:{id}')
+    if tuip:
+        tuip = {k.decode('utf-8'): v.decode('utf-8') for k, v in tuip.items()}
+        tuip['likes'] = r.scard(f'tuip:{id}:likes')
+        return jsonify({'id': id, **tuip}), 200
+    else:
+        return jsonify({'message': 'Tuip no encontrado'}), 404
+    
+@app.route('/api/tuip/<id>', methods=['DELETE'])
+def api_delete_tuip(id):
+    if not is_logged():
+        return jsonify({'message': 'No hay una sesión activa'}), 404
+    if r.exists(f'tuip:{id}'):
+        propietary = r.hget(f'tuip:{id}', 'author').decode('utf-8')
+        if propietary == session.get('user'):
+            r.delete(f'tuip:{id}')
+            return jsonify({'message': 'Tuip eliminado exitosamente'}), 200
+        else:
+            return jsonify({'message': 'No tienes permisos para eliminar este tuip'}), 403
+    else:
+        return jsonify({'message': 'Tuip no encontrado'}), 404
+
+@app.route('/api/like/<id>', methods=['POST'])
+def api_like(id):
+    if not is_logged():
+        return jsonify({'message': 'No hay una sesión activa'}), 404
+    if r.exists(f'tuip:{id}'):
+        user = session.get('user')
+        if not r.sismember(f'tuip:{id}:likes', user):
+            r.sadd(f'tuip:{id}:likes', user)
+            return jsonify({'message': 'Like agregado exitosamente'}), 200
+        else:
+            return jsonify({'message': 'Ya has dado like a este tuip'}), 409
+    else:
+        return jsonify({'message': 'Tuip no encontrado'}), 404
+
+    
+

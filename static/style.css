@@ -59,3 +59,29 @@ body {
 .btn-primary:hover {
     background-color: rgb(80, 172, 218);
 }
+
+.cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background-color: #e6ecf0;
+}
+
+.card {
+    background-color: white;
+    border: none;
+    padding: 30px;
+}
+
+.card-header, .card-body {
+    padding: 10px 15px;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.bi-heart {
+    float: right;
+}
