@@ -1,6 +1,10 @@
 from flask import Flask, request, jsonify, render_template, redirect, session
 import redis
 import os
+import uuid
+import dotenv
+
+dotenv.load_dotenv(".flaskenv")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
@@ -42,8 +46,7 @@ def new():
 def deletedb():
     if is_logged():
         r.flushdb()
-        # invalidates all sessions
-        app.secret_key = os.urandom(24)
+        session.pop('user', None)
         
     return redirect('/login')
 ### API Routes ###
@@ -165,7 +168,8 @@ def api_dislike(id):
 def api_blast(id):
     # This method does not need to check if the user is logged in, just like the tuip as a blast user to test concurrency
     if r.exists(f'tuips:{id}'):
-        r.sadd(f'likes:{id}', 'blast')
+        user = str(uuid.uuid4())
+        r.sadd(f'likes:{id}', user)
         return jsonify({'message': 'Like agregado exitosamente'}), 200
     else:
         return jsonify({'message': 'Tuip no encontrado'}), 404
