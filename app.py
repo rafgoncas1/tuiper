@@ -173,6 +173,3 @@ def api_blast(id):
         return jsonify({'message': 'Like agregado exitosamente'}), 200
     else:
         return jsonify({'message': 'Tuip no encontrado'}), 404
-    
-    
-

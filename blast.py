@@ -1,15 +1,16 @@
-import requests
-import concurrent.futures
 import time
 import argparse
+import aiohttp
+import asyncio
 
-# Función para enviar una petición al servidor
-def send_request(url):
-    requests.post(url)
+async def send_request(session, url):
+    async with session.post(url):
+        pass
 
-def blast(url, numrequests):
-   with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-        executor.map(send_request, [url] * numrequests)
+async def blast(url, numrequests):
+    async with aiohttp.ClientSession() as session:
+        tasks = [send_request(session, url) for _ in range(numrequests)]
+        await asyncio.gather(*tasks)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Blast a tuiper with requests.')
@@ -23,7 +24,7 @@ if __name__ == '__main__':
 
     start_time = time.time()
     
-    blast(f'http://localhost:8000/api/like/{args.id}/blast', args.n)
+    asyncio.run(blast(f'http://localhost:8000/api/like/{args.id}/blast', args.n))
 
     end_time = time.time()
 
