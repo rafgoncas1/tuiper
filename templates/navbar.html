@@ -6,6 +6,10 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <button class="btn btn-danger my-2 my-sm-0" @click="logout">Cerrar sesión</button>
+        <div class="navbar-nav d-flex align-items-center">
+            <a class="nav-item nav-link" href="/deletedb">Borrar base de datos</a>
+            <a href="/new"><button class="btn btn-outline-success mx-2">Crear Tuip</button></a>
+            <button class=" btn btn-danger " @click="logout">Cerrar sesión</button>
+        </div>
     </div>
 </nav>

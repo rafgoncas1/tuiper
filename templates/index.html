@@ -1,43 +1,38 @@
 {% extends "main.html" %}
 
 {% block content %}
-    <div class="cards">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">@PaquitaSalas</h3>
+
+    <div v-if="isLoading" class="d-flex justify-content-center align-items-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    
+    <div class="cards" v-else>
+        <div class="alert alert-danger alert-dismissible fade show notification" role="alert" v-if="errorMessage">
+            [[errorMessage]]
+            <button type="button" class="close" @click="errorMessage=null">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="card mb-1 shadow" v-for="tuip in tuips" :key=tuip.id>
+            <div class="card-header d-flex justify-content-between">
+                <h3 class="card-title">[[tuip.title]]</h3>
+                <b style="color: rgb(76, 144, 213);">@[[tuip.author]]</b>
             </div>
             <div class="card-body">
-                <p>¡Hola! Soy Paquita Salas, representante de actores. ¿En qué puedo ayudarte?</p>
+                <p>[[tuip.content]]</p>
                 <div class="d-flex align-items-center">
-                <span class="material-icons" style="margin-right: 3px;">
-                    favorite_border
-                </span>
-                20
+                        <button @click="likeDislikeTuip(tuip.id)" style="background: none; border: none; padding: 0;">
+                            <span class="material-icons heart" v-bind:style="{ color: tuip.like ? '#e87878' : 'grey' }">
+                                favorite
+                            </span>
+                        </button>
+                    [[tuip.likes]]
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">@PaquitaSalas</h3>
-            </div>
-            <div class="card-body">
-                <p>¡Hola! Soy Paquita Salas, representante de actores. ¿En qué puedo ayudarte?</p>
-                <span class="material-icons">
-                    favorite_border
-                    </span>
-                </span>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">@PaquitaSalas</h3>
-            </div>
-            <div class="card-body">
-                <p>¡Hola! Soy Paquita Salas, representante de actores. ¿En qué puedo ayudarte?</p>
-                <span class="material-icons-outlined">
-                    favorite_border
-                    </span>
-            </div>
-        </div>
+        
+        
     </div>
 {% endblock %}

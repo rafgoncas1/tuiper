@@ -1,0 +1,34 @@
+{% extends "main.html" %}
+
+{% block content %}
+    
+    <div class="d-flex justify-content-center align-items-center">
+        
+        <div class="card-login mx-auto w-100">
+            <form @submit.prevent="postTuip">
+                <h1>Publicar tuip</h1>
+                <hr>
+                <div class="alert alert-danger" role="alert" v-if="!isValidTuip()">
+                    <p v-if="!newTuip.title">El título es obligatorio</p>
+                    <p v-if="newTuip.title && newTuip.title.length < 4">El título debe tener al menos 4 caracteres</p>
+                    <p v-if="!newTuip.content">El contenido es obligatorio</p>
+                    <p v-if="newTuip.content && newTuip.content.length < 10">El contenido debe tener al menos 10 caracteres</p>
+                </div>
+                <div class="alert alert-danger" role="alert" v-if="errorMessage">
+                    [[errorMessage]]
+                </div>
+                <div class="alert alert-success" role="alert" v-else-if="successMessage">
+                    [[successMessage]]
+                </div>
+                <div class="form-group">
+                    <label for="title" class="font-weight-bold">Título</label>
+                    <input v-model="newTuip.title" type="title" placeholder="Elija un título" minlength="4"  maxlength="40" class="form-control shadow-sm mb-2" required></input>
+
+                    <label for="content" class="font-weight-bold">Contenido</label>
+                    <textarea v-model="newTuip.content" type="content" placeholder="¿Qué está pasando?" class="form-control shadow-sm" minlength="10" maxlength="150" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary shadow-sm" :disabled="!isValidTuip()">Publicar</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

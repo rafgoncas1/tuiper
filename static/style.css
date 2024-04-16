@@ -60,6 +60,11 @@ body {
     background-color: rgb(80, 172, 218);
 }
 
+.btn-primary:disabled {
+    background-color: rgb(72, 134, 196);
+    cursor: not-allowed;
+}
+
 .cards {
     display: flex;
     flex-direction: column;
@@ -82,6 +87,22 @@ body {
     font-weight: bold;
 }
 
-.bi-heart {
-    float: right;
+.heart {
+    margin-right: 3px;
+    transition: color 0.3s ease;
+}
+
+.heart:hover {
+    color: #f25b5b;
+}
+
+.notification {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 60%;
+    max-width: 100%;
+    z-index: 9999;
+    animation: blink 5s linear infinite;
 }
