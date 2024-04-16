@@ -161,5 +161,14 @@ def api_dislike(id):
     else:
         return jsonify({'message': 'Tuip no encontrado'}), 404
 
+@app.route('/api/like/<id>/blast', methods=['POST'])
+def api_blast(id):
+    # This method does not need to check if the user is logged in, just like the tuip as a blast user to test concurrency
+    if r.exists(f'tuips:{id}'):
+        r.sadd(f'likes:{id}', 'blast')
+        return jsonify({'message': 'Like agregado exitosamente'}), 200
+    else:
+        return jsonify({'message': 'Tuip no encontrado'}), 404
+    
     
 
