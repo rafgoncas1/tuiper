@@ -2,6 +2,7 @@ import time
 import argparse
 import aiohttp
 import asyncio
+import tqdm.asyncio
 
 async def send_request(session, url):
     async with session.post(url):
@@ -10,7 +11,8 @@ async def send_request(session, url):
 async def blast(url, numrequests):
     async with aiohttp.ClientSession() as session:
         tasks = [send_request(session, url) for _ in range(numrequests)]
-        await asyncio.gather(*tasks)
+        for task in tqdm.asyncio.tqdm.as_completed(tasks):
+            await task
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Blast a tuiper with requests.')
@@ -24,8 +26,10 @@ if __name__ == '__main__':
 
     start_time = time.time()
     
+    print(f"\n\n##### Blast started #####\n\n* requests: {args.n}\n* tuip ID: {args.id}\n")
+    
     asyncio.run(blast(f'http://localhost:8000/api/like/{args.id}/blast', args.n))
 
     end_time = time.time()
 
-    print(f'Tiempo transcurrido: {end_time - start_time} segundos. Peticiones totales enviadas: {args.n}')
+    print(f'\n{args.n} requests sent in {end_time-start_time} seconds')

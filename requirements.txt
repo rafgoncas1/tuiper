@@ -20,6 +20,7 @@ python-dotenv==1.0.1
 redis==5.0.3
 requests==2.31.0
 setuptools==69.5.1
+tqdm==4.66.2
 urllib3==2.2.1
 Werkzeug==3.0.2
 yarl==1.9.4
