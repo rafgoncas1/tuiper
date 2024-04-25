@@ -3,6 +3,7 @@ import redis
 import os
 import uuid
 import dotenv
+import hashlib
 
 dotenv.load_dotenv(".flaskenv")
 
@@ -55,7 +56,8 @@ def deletedb():
 def api_login():
     username = request.get_json()['username']
     password = request.get_json()['password']
-    if r.get(username) == password:
+    hashed_password = hash_password(password)
+    if r.get("user:"+username) == hashed_password:
         session['user'] = username
         return jsonify({'message': 'Inicio de sesión exitoso'}), 200
     else:
@@ -65,10 +67,11 @@ def api_login():
 def api_register():
     username = request.get_json()['username']
     password = request.get_json()['password']
-    if r.get(username):
+    hashed_password = hash_password(password)
+    if r.get("user:"+username):
         return jsonify({'message': 'El nombe de usuario ya existe'}), 409
     else:
-        r.set(username, password)
+        r.set('user:' + username, hashed_password)
         return jsonify({'message': 'Registro exitoso'}), 200
     
 @app.route('/api/logout', methods=['POST'])
@@ -173,3 +176,8 @@ def api_blast(id):
         return jsonify({'message': 'Like agregado exitosamente'}), 200
     else:
         return jsonify({'message': 'Tuip no encontrado'}), 404
+    
+### Auxiliary functions ###
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
