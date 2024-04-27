@@ -84,7 +84,7 @@ def api_logout():
 @app.route('/api/tuips', methods=['GET'])
 def api_tuips():
     if not is_logged():
-        return jsonify({'message': 'No hay una sesión activa'}), 404
+        return jsonify({'message': 'No hay una sesión activa'}), 403
     tuip_keys = r.keys('tuips:*')
     tuips = []
     for tuip_key in tuip_keys:     
@@ -99,7 +99,7 @@ def api_tuips():
 @app.route('/api/tuips', methods=['POST'])
 def api_tuip():
     if not is_logged():
-        return jsonify({'message': 'No hay una sesión activa'}), 404
+        return jsonify({'message': 'No hay una sesión activa'}), 403
     try:
         title = request.get_json()['title']
         content = request.get_json()['content']
@@ -115,7 +115,7 @@ def api_tuip():
 @app.route('/api/tuips/<id>', methods=['GET'])
 def api_get_tuip(id):
     if not is_logged():
-        return jsonify({'message': 'No hay una sesión activa'}), 404
+        return jsonify({'message': 'No hay una sesión activa'}), 403
     tuip = r.hgetall(f'tuips:{id}')
     if tuip:
         tuip = {k.decode('utf-8'): v.decode('utf-8') for k, v in tuip.items()}
@@ -128,7 +128,7 @@ def api_get_tuip(id):
 @app.route('/api/tuips/<id>', methods=['DELETE'])
 def api_delete_tuip(id):
     if not is_logged():
-        return jsonify({'message': 'No hay una sesión activa'}), 404
+        return jsonify({'message': 'No hay una sesión activa'}), 403
     if r.exists(f'tuips:{id}'):
         propietary = r.hget(f'tuips:{id}', 'author').decode('utf-8')
         if propietary == session.get('user'):
@@ -142,7 +142,7 @@ def api_delete_tuip(id):
 @app.route('/api/like/<id>', methods=['POST'])
 def api_like(id):
     if not is_logged():
-        return jsonify({'message': 'No hay una sesión activa'}), 404
+        return jsonify({'message': 'No hay una sesión activa'}), 403
     if r.exists(f'tuips:{id}'):
         user = session.get('user')
         if not r.sismember(f'likes:{id}', user):
@@ -156,7 +156,7 @@ def api_like(id):
 @app.route('/api/like/<id>', methods=['DELETE'])
 def api_dislike(id):
     if not is_logged():
-        return jsonify({'message': 'No hay una sesión activa'}), 404
+        return jsonify({'message': 'No hay una sesión activa'}), 403
     if r.exists(f'tuips:{id}'):
         user = session.get('user')
         if r.sismember(f'likes:{id}', user):
