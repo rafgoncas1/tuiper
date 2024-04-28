@@ -70,7 +70,7 @@ nano .flaskenv
 4. Inicia la aplicación con gunicorn (solo sistemas Unix):
 
 ```bash
-gunicorn -w 4 -k gevent -b 127.0.0.1:8000 app:app
+gunicorn -w 4 -k gevent -b 0.0.0.0:8000 app:app
 ```
 
 ## Siguientes pasos
