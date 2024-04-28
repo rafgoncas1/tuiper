@@ -90,7 +90,7 @@ def api_tuips():
     for tuip_key in tuip_keys:     
         tuip = r.hgetall(tuip_key)
         tuip['likes'] = r.scard(f'likes:{tuip_key.split(":")[1]}')
-        tuip['like'] = session.get('user') in r.smembers(f'likes:{tuip_key.split(":")[1]}')
+        tuip['like'] = r.sismember(f'likes:{tuip_key.split(":")[1]}', session.get('user'))
         tuips.append({'id': tuip_key.split(':')[1], **tuip})
     tuips.sort(key=lambda x: int(x['id']), reverse=True)
     return jsonify(tuips), 200
@@ -106,7 +106,6 @@ def api_tuip():
         author = session.get('user')
         
         tuip_id = r.incr('tuip_id')
-        
         r.hmset(f'tuips:{tuip_id}', {'title': title, 'content': content, 'author': author})
     except:
         return jsonify({'message': 'Error al crear tuip'}), 500
@@ -118,8 +117,7 @@ def api_get_tuip(id):
         return jsonify({'message': 'No hay una sesión activa'}), 403
     tuip = r.hgetall(f'tuips:{id}')
     if tuip:
-        tuip = {k.decode('utf-8'): v.decode('utf-8') for k, v in tuip.items()}
-        tuip['like'] = session.get('user') in r.smembers(f'likes:{id}')
+        tuip['like'] = r.sismember(f'likes:{id}', session.get('user'))
         tuip['likes'] = r.scard(f'likes:{id}')
         return jsonify({'id': id, **tuip}), 200
     else:
